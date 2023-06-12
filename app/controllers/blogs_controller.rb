@@ -46,6 +46,7 @@ class BlogsController < ApplicationController
 
   def set_blog
     @blog = Blog.find(params[:id])
+    raise ActiveRecord::RecordNotFound, 'You cannot access this entry.' if @blog.secret && (current_user.nil? || !@blog.owned_by?(current_user))
   end
 
   def correct_user
