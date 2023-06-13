@@ -20,6 +20,7 @@ class BlogsController < ApplicationController
 
   def create
     @blog = current_user.blogs.new(blog_params)
+    redirect_to new_blog_url and return if !@blog.user.premium && @blog.random_eyecatch
 
     if @blog.save
       redirect_to blog_url(@blog), notice: 'Blog was successfully created.'
@@ -29,6 +30,8 @@ class BlogsController < ApplicationController
   end
 
   def update
+    redirect_to edit_blog_url and return if !@blog.user.premium && params[:blog][:random_eyecatch]
+
     if @blog.update(blog_params)
       redirect_to blog_url(@blog), notice: 'Blog was successfully updated.'
     else
