@@ -4,7 +4,7 @@ class BlogsController < ApplicationController
   skip_before_action :authenticate_user!, only: %i[index show]
 
   before_action :set_blog, only: %i[show]
-  before_action :correct_user, only: %i[edit update destroy]
+  before_action :set_blog_of_current_user, only: %i[edit update destroy]
 
   def index
     @blogs = Blog.search(params[:term]).published.default_order
@@ -52,7 +52,7 @@ class BlogsController < ApplicationController
     raise ActiveRecord::RecordNotFound, 'You cannot access this entry.' if @blog.secret && (current_user.nil? || !@blog.owned_by?(current_user))
   end
 
-  def correct_user
+  def set_blog_of_current_user
     @blog = current_user.blogs.find(params[:id])
   end
 
